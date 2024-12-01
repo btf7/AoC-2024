@@ -2,15 +2,14 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <ctype.h>
+#include <stdint.h>
 
-struct intArray {
-    int* arr;
-    int len;
-};
+// Numbers are between 1 and 99999, therefore uint32_t for numbers
+// There are 6 numbers in the test input, 1000 in the real input, therefore uint16_t for indexes
 
-void getLists(const char* fileName, struct intArray* list1_p, struct intArray* list2_p);
-void bubbleSort(struct intArray* arr_p);
-int sumSimilarities(struct intArray list1, struct intArray list2);
+void getLists(const char* fileName, uint32_t** list1_p, uint32_t** list2_p, uint16_t* len_p);
+void bubbleSort(uint32_t* arr, uint16_t len);
+size_t sumSimilarities(const uint32_t* list1, const uint32_t* list2, uint16_t len);
 
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -18,50 +17,52 @@ int main(int argc, char** argv) {
         exit(1);
     }
 
-    struct intArray list1 = {NULL, 0};
-    struct intArray list2 = {NULL, 0};
-    getLists(argv[1], &list1, &list2);
-    bubbleSort(&list1);
-    bubbleSort(&list2);
-    int result = sumSimilarities(list1, list2);
+    uint32_t* list1 = NULL;
+    uint32_t* list2 = NULL;
+    uint16_t len;
+    getLists(argv[1], &list1, &list2, &len);
+    bubbleSort(list1, len);
+    bubbleSort(list2, len);
+    const size_t result = sumSimilarities(list1, list2, len);
 
-    free(list1.arr);
-    free(list2.arr);
+    free(list1);
+    free(list2);
 
-    printf("%d\n", result);
+    printf("%lld\n", result);
     return 0;
 }
 
-void getLists(const char* fileName, struct intArray* list1_p, struct intArray* list2_p) {
-    FILE* file_p = fopen(fileName, "r");
+void getLists(const char* fileName, uint32_t** const list1_p, uint32_t** const list2_p, uint16_t* const len_p) {
+    FILE* const file_p = fopen(fileName, "r");
     if (!file_p) {
         printf("Failed to open file\n");
         exit(1);
     }
 
-    char c = getc(file_p);
-    char numText[6]; // All of the numbers are 5 digits (or less in test input)
-    int len = 0;
-    int allocated = 0;
+    int c = getc(file_p);
+    char numText[6]; // All of the numbers are 1 or 5 digits
+    uint16_t allocated = 0;
+    *len_p = 0;
 
     while (c != EOF) {
         assert(isdigit(c));
-        int i = 0;
+        uint8_t i = 0;
         do {
+            assert(i < 5);
             numText[i++] = c;
         } while (isdigit(c = getc(file_p)));
         numText[i] = '\0';
 
-        if (len == allocated) {
+        if (*len_p == allocated) {
             if (allocated) {
                 allocated *= 2;
             } else {
                 allocated = 1;
             }
-            list1_p->arr = realloc(list1_p->arr, allocated * sizeof *list1_p->arr);
-            list2_p->arr = realloc(list2_p->arr, allocated * sizeof *list2_p->arr);
+            *list1_p = realloc(*list1_p, allocated * sizeof **list1_p);
+            *list2_p = realloc(*list2_p, allocated * sizeof **list2_p);
         }
-        list1_p->arr[len] = atoi(numText);
+        (*list1_p)[*len_p] = atoi(numText);
 
         assert(c == ' ');
         while ((c = getc(file_p)) == ' ') {}
@@ -69,55 +70,54 @@ void getLists(const char* fileName, struct intArray* list1_p, struct intArray* l
         assert(isdigit(c));
         i = 0;
         do {
+            assert(i < 5);
             numText[i++] = c;
         } while (isdigit(c = getc(file_p)));
         numText[i] = '\0';
 
-        list2_p->arr[len++] = atoi(numText);
+        (*list2_p)[(*len_p)++] = atoi(numText);
 
         assert(c == '\n' || c == EOF);
-        c = getc(file_p); // Move onto next line
+        c = getc(file_p); // Move onto the next line
     }
 
     fclose(file_p);
 
-    list1_p->arr = realloc(list1_p->arr, len * sizeof *list1_p->arr);
-    list2_p->arr = realloc(list2_p->arr, len * sizeof *list2_p->arr);
-    list1_p->len = len;
-    list2_p->len = len;
+    *list1_p = realloc(*list1_p, *len_p * sizeof **list1_p);
+    *list2_p = realloc(*list2_p, *len_p * sizeof **list2_p);
 }
 
-void bubbleSort(struct intArray* arr_p) {
-    for (int i = 1; i < arr_p->len; i++) {
-        for (int j = 0; j < arr_p->len - i; j++) {
-            const int current = arr_p->arr[j];
-            const int next = arr_p->arr[j + 1];
+void bubbleSort(uint32_t* const arr, const uint16_t len) {
+    for (uint16_t i = 1; i < len; i++) {
+        for (uint16_t j = 0; j < len - i; j++) {
+            const uint32_t current = arr[j];
+            const uint32_t next = arr[j + 1];
             if (current > next) {
-                arr_p->arr[j] = next;
-                arr_p->arr[j + 1] = current;
+                arr[j] = next;
+                arr[j + 1] = current;
             }
         }
     }
 }
 
-int sumSimilarities(struct intArray list1, struct intArray list2) {
-    int sum = 0;
+size_t sumSimilarities(const uint32_t * const list1, const uint32_t * const list2, const uint16_t len) {
+    size_t sum = 0;
 
-    int i = 0;
-    int j = 0;
-    while (i < list1.len && j < list2.len) {
-        const int num1 = list1.arr[i];
-        const int num2 = list2.arr[j];
+    uint16_t i = 0;
+    uint16_t j = 0;
+    while (i < len && j < len) {
+        const uint32_t num1 = list1[i];
+        const uint32_t num2 = list2[j];
         if (num1 > num2) {
             j++;
         } else if (num1 < num2) {
             i++;
         } else {
-            int leftMatches = 1;
-            int rightMatches = 1;
+            uint16_t leftMatches = 1;
+            uint16_t rightMatches = 1;
 
-            while (list1.arr[++i] == num1) {leftMatches++;}
-            while (list2.arr[++j] == num2) {rightMatches++;}
+            while (list1[++i] == num1) {leftMatches++;}
+            while (list2[++j] == num2) {rightMatches++;}
 
             sum += num1 * leftMatches * rightMatches;
         }

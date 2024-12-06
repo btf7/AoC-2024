@@ -17,8 +17,13 @@ int main(int argc, char** argv) {
     getLines(argv[1], &lines, &lineCount, &lineLen);
 
     int result = solve(lines, lineCount, lineLen);
-
     printf("%d\n", result);
+
+    for (int i = 0; i < lineCount; i++) {
+        free(lines[i]);
+    }
+    free(lines);
+
     return 0;
 }
 

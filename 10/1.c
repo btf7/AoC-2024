@@ -6,7 +6,7 @@
 #include <string.h>
 
 void getMap(const char* fileName, int** map_p, int* width_p, int* height_p);
-int getRating(const int* map, int x, int y, int width, int height);
+int getScore(const int* map, int x, int y, int width, int height);
 
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     int result = 0;
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < height; y++) {
-            if (map[x + y * height] == 0) result += getRating(map, x, y, width, height);
+            if (map[x + y * height] == 0) result += getScore(map, x, y, width, height);
         }
     }
     printf("%d\n", result);
@@ -76,7 +76,7 @@ void getMap(const char* fileName, int** map_p, int* width_p, int* height_p) {
     *map_p = realloc(*map_p, *width_p * *height_p * sizeof **map_p);
 }
 
-int getRating(const int* map, int startX, int startY, int width, int height) {
+int getScore(const int* map, int startX, int startY, int width, int height) {
     assert(0 <= startX && startX < width);
     assert(0 <= startY && startY < height);
     assert(map[startX + startY * width] == 0);

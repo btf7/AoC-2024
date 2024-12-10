@@ -4,7 +4,7 @@
 #include <ctype.h>
 
 void getMap(const char* fileName, int** map_p, int* width_p, int* height_p);
-int getRating(const int* map, int x, int y, int width, int height);
+int getScore(const int* map, int x, int y, int width, int height);
 
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
     int result = 0;
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < height; y++) {
-            if (map[x + y * height] == 0) result += getRating(map, x, y, width, height);
+            if (map[x + y * height] == 0) result += getScore(map, x, y, width, height);
         }
     }
     printf("%d\n", result);
@@ -76,7 +76,7 @@ void getMap(const char* fileName, int** map_p, int* width_p, int* height_p) {
 
 // Also gets the rating of any non-0 tile
 // Could memoize for better performance but it's actually surprisingly fast
-int getRating(const int* map, int x, int y, int width, int height) {
+int getScore(const int* map, int x, int y, int width, int height) {
     assert(0 <= x && x < width);
     assert(0 <= y && y < height);
 
@@ -84,9 +84,9 @@ int getRating(const int* map, int x, int y, int width, int height) {
     if (val == 9) return 1;
 
     int rating = 0;
-    if (x > 0 && map[x - 1 + y * width] == val + 1) rating += getRating(map, x - 1, y, width, height);
-    if (y > 0 && map[x + (y - 1) * width] == val + 1) rating += getRating(map, x, y - 1, width, height);
-    if (x < width - 1 && map[x + 1 + y * width] == val + 1) rating += getRating(map, x + 1, y, width, height);
-    if (y < height - 1 && map[x + (y + 1) * width] == val + 1) rating += getRating(map, x, y + 1, width, height);
+    if (x > 0 && map[x - 1 + y * width] == val + 1) rating += getScore(map, x - 1, y, width, height);
+    if (y > 0 && map[x + (y - 1) * width] == val + 1) rating += getScore(map, x, y - 1, width, height);
+    if (x < width - 1 && map[x + 1 + y * width] == val + 1) rating += getScore(map, x + 1, y, width, height);
+    if (y < height - 1 && map[x + (y + 1) * width] == val + 1) rating += getScore(map, x, y + 1, width, height);
     return rating;
 }

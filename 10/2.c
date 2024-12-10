@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <ctype.h>
-#include <stdbool.h>
-#include <string.h>
 
 void getMap(const char* fileName, int** map_p, int* width_p, int* height_p);
 int getRating(const int* map, int x, int y, int width, int height);

@@ -1,6 +1,6 @@
 CC = gcc
 CCWARNINGS = -Wall -Wextra -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wredundant-decls -Wshadow
-CFLAGS = -std=c17 -O3 -g3 -pg -no-pie $(CCWARNINGS)
+CFLAGS = -std=c17 -O3 -g3 $(CCWARNINGS)
 
 all: 1 2
 

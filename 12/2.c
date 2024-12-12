@@ -183,5 +183,10 @@ int getPerimeter(const bool* region, int width, int height) {
         }
     }
 
+    free(topEdges);
+    free(bottomEdges);
+    free(leftEdges);
+    free(rightEdges);
+
     return perimeter;
 }

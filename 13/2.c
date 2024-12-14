@@ -81,7 +81,6 @@ int main(int argc, char** argv) {
 
     free(machines);
 
-
     printf("%lld\n", result);
     return 0;
 }

@@ -70,6 +70,7 @@ void getInitialMap(const char* fileName, int** map_p, int* len_p) {
         }
     }
 
+    fclose(file_p);
     *map_p = realloc(*map_p, *len_p * sizeof **map_p);
 }
 

@@ -85,6 +85,7 @@ void getMap(const char* fileName, char** map_p, int* width_p, int* height_p) {
         (*map_p)[i++] = c;
     }
 
+    fclose(file_p);
     *map_p = realloc(*map_p, *width_p * *height_p * sizeof **map_p);
 }
 

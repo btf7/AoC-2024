@@ -72,6 +72,7 @@ void getInitialStones(const char* fileName, struct stone** stones_p, int* len_p)
         c = getc(file_p);
     }
 
+    fclose(file_p);
     *stones_p = realloc(*stones_p, *len_p * sizeof **stones_p);
 }
 

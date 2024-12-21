@@ -76,6 +76,8 @@ struct stone getInitialStones(const char* fileName) {
         }
     }
 
+    fclose(file_p);
+
     return firstStone;
 }
 

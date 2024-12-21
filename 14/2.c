@@ -147,5 +147,6 @@ void getRobots(const char* fileName, struct robot** robots_p, int* len_p) {
         assert(c == '\n');
     }
 
+    fclose(file_p);
     *robots_p = realloc(*robots_p, *len_p * sizeof **robots_p);
 }

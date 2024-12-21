@@ -246,6 +246,7 @@ void getInstructions(const char* fileName, enum instructions** instructions_p, i
         assert(c == ',' || c == EOF);
     }
 
+    fclose(file_p);
     *instructions_p = realloc(*instructions_p, *instructionCount_p * sizeof **instructions_p);
 }
 

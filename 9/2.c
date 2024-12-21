@@ -23,7 +23,6 @@ int main(int argc, char** argv) {
     compactMap(&map, &len);
 
     size_t result = 0;
-    int i = 0;
     for (int i = 0; i < len; i++) {
         if (map[i].len == 0 || map[i].id == -1) continue;
         for (int j = 0; j < map[i].len; j++) {
@@ -87,6 +86,7 @@ void getInitialMap(const char* fileName, struct span** map_p, int* len_p) {
         }
     }
 
+    fclose(file_p);
     *map_p = realloc(*map_p, *len_p * sizeof **map_p);
 }
 

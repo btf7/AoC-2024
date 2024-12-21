@@ -149,6 +149,8 @@ void readFile(const char* fileName, struct rule** rules_p, int* ruleCount_p, str
             break;
         }
     }
+
+    fclose(file_p);
 }
 
 bool checkUpdate(struct update update, const struct rule* rules, int ruleCount) {

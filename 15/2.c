@@ -204,6 +204,7 @@ void getMap(const char* fileName, enum tile*** map_p, int* width_p, int* height_
         (*instructionCount_p)++;
     }
 
+    fclose(file_p);
     *instructions_p = realloc(*instructions_p, *instructionCount_p * sizeof **instructions_p);
 }
 

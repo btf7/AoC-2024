@@ -179,5 +179,6 @@ void getMachines(const char* fileName, struct machine** machines_p, int* len_p) 
         c = getc(file_p); assert(c == '\n');
     }
 
+    fclose(file_p);
     *machines_p = realloc(*machines_p, *len_p * sizeof **machines_p);
 }
